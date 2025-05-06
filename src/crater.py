@@ -72,7 +72,6 @@ class crater:
         expiry_time = val.get(_ttl_expiry)
         if expiry_time:
             if time_ns() // 1_000 > expiry_time:
-                self._log_err(Err.TTLKeyExpiry)
                 return True
         return False
 
@@ -83,7 +82,7 @@ class crater:
                 val = node.get(key[-1])
                 if isinstance(val, Dict):
                     if self._is_expired(val):
-                        return None
+                        return self._log_err(Err.TTLKeyExpiry)
                     if isinstance(val.get(_v), int):
                         version = self._versions.make()
                         self._kfv.pop(val[_vs], None)
@@ -111,7 +110,7 @@ class crater:
                 val = node.get(key[-1])
                 if isinstance(val, Dict):
                     if self._is_expired(val):
-                        return None
+                        return self._log_err(Err.TTLKeyExpiry)
                     if isinstance(val.get(_v), int):
                         version = self._versions.make()
                         self._kfv.pop(val[_vs], None)
@@ -146,9 +145,9 @@ class crater:
             if node and last_key_part in node:
                 potential_val = node.get(last_key_part)
                 if isinstance(potential_val, dict) and _vs in potential_val:
-                     if not self._is_expired(potential_val):
-                          current_val = potential_val
-
+                    if self._is_expired(potential_val):
+                        return self._log_err(Err.TTLKeyExpiry)
+                    current_val = potential_val
             perform_set = False
             old_version_to_remove = None
 
@@ -200,7 +199,7 @@ class crater:
             val = node.get(key[-1])
             if isinstance(val, Dict):
                 if self._is_expired(val):
-                    return None
+                    return self._log_err(Err.TTLKeyExpiry)
                 return val
             return self._log_err(Err.InvalidDataFormat)
 
@@ -237,10 +236,11 @@ class crater:
 
                 for item_value in current_node.values():
                     if isinstance(item_value, Dict) and _vs in item_value:
-                        if not self._is_expired(item_value):
-                            results.append(item_value)
-                            if limit and len(results) >= limit:
-                                return results
+                        if self._is_expired(item_value):
+                            return self._log_err(Err.TTLKeyExpiry)
+                        results.append(item_value)
+                        if limit and len(results) >= limit:
+                            return results
                     elif isinstance(item_value, dict):
                         if not limit or len(results) < limit:
                              stack.append(item_value)

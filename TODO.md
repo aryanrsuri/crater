@@ -1,0 +1,7 @@
+- [ ] Benchmarking function
+- [ ] Watch function
+- [ ] LRU cache/eviction
+- [ ] Persistence
+  - [ ] Snapshoting
+  - [ ] Serialised
+  - [ ] Operation WAL

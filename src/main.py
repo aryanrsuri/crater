@@ -4,8 +4,15 @@ from crater import versionstamp, crater
     
 def test_expired_tokens(c: crater):
     c.set(["expired_in_1"], 1, ttl_seconds=1)
+    print("get")
+    print(c.get(["expired_in_1"]))
+    print("list")
+    print(c.list(["expired_in_1"]))
     time.sleep(1)
     print("Getting expired token")
+    print("lsit")
+    print(c.list(["expired_in_1"]))
+    print("get")
     print(c.get(["expired_in_1"]))
 
 if __name__ == "__main__":
