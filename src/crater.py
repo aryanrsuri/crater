@@ -42,12 +42,11 @@ def recursive_dict():
 
 class crater:
     _lock = threading.Lock()
-    _errors: List[Err]
     def __init__(self):
         self._store = recursive_dict()
         self._versions = versionstamp()
-        self._kfv= {}
-        self._errors = []
+        self._kfv: Dict = {}
+        self._errors: List[Err] = []
 
     def _log_err(self, err: Err) -> None:
         print(f"[ERR] {err.value}")
