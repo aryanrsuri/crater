@@ -28,7 +28,7 @@ Versionstamp is a monotonically increasing, collision resistant, time ordered un
 
 * Counter incremented if (within the thread Lock) the make function is called within the same millisecond for collision resistance
 
-#### 
+#### Randomness
 
 * 16 Bits of randomness to ensure uniqueness
 
